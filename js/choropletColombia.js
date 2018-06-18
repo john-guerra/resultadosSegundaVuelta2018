@@ -58,7 +58,8 @@ function choropletColombia (selection, mapData, data, result, dictCities, color,
     .on("click", clicked)
     // .on("mouseover", updateDetails)
     .style("fill", function (d) {
-      var city = dictCities[d.properties.name+d.properties.dpt];
+      // var city = dictCities[d.properties.name+d.properties.dpt];
+      var city = dictCities[+d.id];
       if (city)
         return color(city[result]);
       else {
@@ -71,7 +72,8 @@ function choropletColombia (selection, mapData, data, result, dictCities, color,
   tracts
     .append("title")
     .text(function(d) {
-      var city = dictCities[d.properties.name+d.properties.dpt];
+      // var city = dictCities[d.properties.name+d.properties.dpt];
+      var city = dictCities[+d.id];
       var msg = d.properties.name + ", " + d.properties.dpt;
       if (city)
         msg += " "+ fmt(city[result]);
@@ -158,7 +160,8 @@ function choropletColombia (selection, mapData, data, result, dictCities, color,
   me.updateColor = function (color) {
     tracts
       .style("fill", function (d) {
-        var city = dictCities[d.properties.name+d.properties.dpt];
+        // var city = dictCities[d.properties.name+d.properties.dpt];
+        var city = dictCities[+d.id];
         if (city)
           return color(city[result]);
         else {

@@ -1,4 +1,4 @@
-/* global d3, topojson, $ , choropletColombia */
+/* global d3, topojson, $ , choropletColombia, compareCities */
 
 // var svg = d3.select("svg"),
 //   width = $(document).width()*10/12,
@@ -22,16 +22,19 @@ function ready(error, mapData, data) {
   data.forEach(function (d) {
     //Parse the percentages
     candidates.forEach(function (c) {
-      d[c+" result"] = +d[c]/+d["votantes"];
+      d.votantes= +d.votantes;
+      d[c+" result"] = +d[c]/d["votantes"];
     });
+    d.nulos_no_marcados = (+d["votos_nulos"] + +d["votos_no_marcados"])/d.votantes;
 
     // var res = {};
-    dictCities[d.municipio.toUpperCase()+d.departamento.toUpperCase()]=d;
+    // dictCities[d.municipio.toUpperCase()+d.departamento.toUpperCase()]=d;
+    dictCities[+d.dane]=d;
   });
 
   var color = d3.scaleOrdinal()
     .domain(candidates)
-    .range([d3.interpolateBlues, d3.interpolateOranges, d3.interpolateGreens, d3.interpolatePurples,  d3.interpolateReds, d3.interpolateGreys  ]
+    .range([d3.interpolateBlues, d3.interpolateOranges, d3.interpolateGreys  ]
       .map(function (int) {
         return d3.scaleSequential(int)
           .domain([0, d3.select("#inThreshold").property("value")]);
@@ -79,7 +82,7 @@ function ready(error, mapData, data) {
     .on("change", function () {
       var threshold = +d3.select("#inThreshold").property("value");
       console.log("Change threshold", threshold);
-      color.range([d3.interpolateBlues, d3.interpolateOranges, d3.interpolateGreens, d3.interpolatePurples,  d3.interpolateReds, d3.interpolateGreys  ]
+      color.range([d3.interpolateBlues, d3.interpolateOranges, d3.interpolateGreys  ]
         .map(function (int) {
           return d3.scaleSequential(int)
             .domain([0, threshold]);
@@ -94,6 +97,9 @@ function ready(error, mapData, data) {
 
       d3.select("#spanThreshold").text(fmt(threshold));
     });
+
+
+  compareCities(data);
 }
 
 
